@@ -64,7 +64,14 @@ public class SecurityConfiguration {
                                 "/api/auth/users/register",
                                 "/api/auth/users/login"
                         ).permitAll()
+                        .requestMatchers(
+                                "/h2-console/**",
+                                "/error"
+                        ).permitAll()
                         .anyRequest().authenticated()
+                )
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.sameOrigin())
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
