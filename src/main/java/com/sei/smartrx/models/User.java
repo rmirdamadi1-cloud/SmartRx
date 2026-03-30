@@ -1,8 +1,6 @@
 package com.sei.smartrx.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -39,8 +37,7 @@ public class User {
     @JoinColumn(name = "profile_id", referencedColumnName = "id")
     private UserProfile userProfile;
 
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "user", orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Prescription> prescriptionList;
 
     public User() {
