@@ -2,9 +2,11 @@ package com.sei.smartrx.security;
 
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,10 +28,10 @@ public class JWTUtils {
      */
     public String generateJwtToken(MyUserDetails myUserDetails) {
         return Jwts.builder()
-                .setSubject((myUserDetails.getUsername()))
-                .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(SignatureAlgorithm.HS256, jwtSecret)
+                .subject(myUserDetails.getUsername())
+                .issuedAt(new Date())
+                .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8)))
                 .compact();
     }
 
@@ -39,7 +41,8 @@ public class JWTUtils {
      * @return JWT subject, username, as a String.
      */
     public String getUserNameFromJwtToken(String token) {
-        return Jwts.parserBuilder().setSigningKey(jwtSecret).build().parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parser().verifyWith(Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8)))
+                .build().parseSignedClaims(token).getPayload().getSubject();
     }
 
     /**
@@ -49,7 +52,8 @@ public class JWTUtils {
      */
     public boolean validateJwtToken(String authToken) {
         try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
+            Jwts.parser().verifyWith(Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8)))
+                    .build().parseSignedClaims(authToken);
             return true;
         } catch (SecurityException e) {
             logger.log(Level.SEVERE, "Invalid JWT signature: {}", e.getMessage());
