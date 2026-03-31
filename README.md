@@ -196,7 +196,7 @@ To run this application on your local machine, please follow the steps below:
 
 Before proceeding with the installation, ensure that the following prerequisites are met:
 
-- Java Development Kit (JDK) 8 or higher is installed on your machine.
+- Java Development Kit (JDK) 8 is installed on your machine.
 - Apache Maven is installed.
 - PostgreSQL database is installed and running.
 

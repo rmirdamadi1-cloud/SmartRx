@@ -116,7 +116,7 @@ public class PrescriptionService {
      */
     public Medication getAMedication(Long medicationId){
         Optional<Medication> medication = medicationRepository.findById(medicationId);
-        if(medication.isEmpty()){
+        if(!medication.isPresent()){
             throw new InformationNotFoundException("There is no medication with id of " + medicationId);
         }
         else{
@@ -133,7 +133,7 @@ public class PrescriptionService {
 
     public Prescription requestPrescriptionRefill(Long prescriptionId){
         Optional<Prescription> refillPrescription = prescriptionRepository.findById(prescriptionId);
-        if(refillPrescription.isEmpty()){
+        if(!refillPrescription.isPresent()){
             throw new InformationNotFoundException("There is no prescription with this id present");
         }
         else{
@@ -151,7 +151,7 @@ public class PrescriptionService {
         Optional<UserProfile> userProfile = Optional.ofNullable(getCurrentLoggedInUser().getUserProfile());
         if (userProfile.isPresent() && userProfile.get().getRole().equals("ROLE_PHARMACIST")) {
             Optional<Prescription> onePrescription = prescriptionRepository.findById(prescriptionId);
-            if (onePrescription.isEmpty()) {
+            if (!onePrescription.isPresent()) {
                 throw new InformationNotFoundException("There is no prescription with this id present");
             } else {
                 return onePrescription.get();
